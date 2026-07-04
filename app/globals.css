@@ -1,26 +1,186 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-space: #030014;
+  --color-space-deep: #060222;
+  --color-space-card: #0b0630;
+  --color-nebula: #8b5cf6;
+  --color-nebula-dim: #6d28d9;
+  --color-comet: #22d3ee;
+  --color-comet-dim: #0e7490;
+  --color-starlight: #e8e6f5;
+  --color-starlight-dim: #9d98c4;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --font-display: var(--font-space-grotesk);
+  --font-sans: var(--font-inter);
+  --font-mono: var(--font-jetbrains-mono);
+
+  --shadow-glow-cyan: 0 0 24px -4px rgba(34, 211, 238, 0.45);
+  --shadow-glow-violet: 0 0 24px -4px rgba(139, 92, 246, 0.45);
+
+  --animate-twinkle: twinkle 3.2s ease-in-out infinite;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-orbit: orbit 14s linear infinite;
+
+  @keyframes twinkle {
+    0%,
+    100% {
+      opacity: 0.35;
+    }
+    50% {
+      opacity: 1;
+    }
+  }
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-12px);
+    }
+  }
+  @keyframes orbit {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
   }
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-space);
+  color: var(--color-starlight);
+  font-family: var(--font-sans);
+  overflow-x: hidden;
+}
+
+::selection {
+  background: #5b21b6;
+  color: #ffffff;
+}
+
+/* Animated gradient highlights for meaningful words (see content/profile.ts) */
+.text-galaxy,
+.text-solar {
+  background-size: 220% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 600;
+  animation: galaxy-shimmer 5.5s linear infinite;
+}
+
+.text-galaxy {
+  background-image: linear-gradient(
+    110deg,
+    #22d3ee 10%,
+    #a78bfa 38%,
+    #f472b6 55%,
+    #22d3ee 90%
+  );
+  filter: drop-shadow(0 0 10px rgba(139, 92, 246, 0.35));
+}
+
+.text-solar {
+  background-image: linear-gradient(
+    110deg,
+    #fbbf24 10%,
+    #fb7185 45%,
+    #f9a8d4 60%,
+    #fbbf24 90%
+  );
+  filter: drop-shadow(0 0 10px rgba(251, 191, 36, 0.4));
+}
+
+@keyframes galaxy-shimmer {
+  to {
+    background-position: 220% center;
+  }
+}
+
+/* Infinite end-to-end marquee (industries carousel) */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee var(--marquee-duration, 48s) linear infinite;
+}
+
+.marquee-track.marquee-reverse {
+  animation-direction: reverse;
+}
+
+.marquee-band:hover .marquee-track {
+  animation-play-state: paused;
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* Slow diagonal light sweep across mission-briefing panels */
+.shine-sweep {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    105deg,
+    transparent 42%,
+    rgba(255, 255, 255, 0.07) 50%,
+    transparent 58%
+  );
+  background-size: 300% 100%;
+  animation: shine 7s ease-in-out infinite;
+}
+
+@keyframes shine {
+  0% {
+    background-position: 300% 0;
+  }
+  60%,
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shine-sweep {
+    animation: none;
+    background: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .text-galaxy,
+  .text-solar {
+    animation: none;
+  }
+}
+
+/* Custom asteroid cursor hides the native one only when active (set via JS on <html>) */
+html.asteroid-cursor,
+html.asteroid-cursor a,
+html.asteroid-cursor button,
+html.asteroid-cursor [role="button"] {
+  cursor: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

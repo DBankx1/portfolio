@@ -1,0 +1,116 @@
+export type SkillGroup = {
+  id: string;
+  title: string;
+  callSign: string;
+  accent: "cyan" | "violet";
+  skills: string[];
+};
+
+export const skillGroups: SkillGroup[] = [
+  {
+    id: "languages",
+    title: "Languages & Frameworks",
+    callSign: "SYS-01",
+    accent: "cyan",
+    skills: [
+      "C#",
+      ".NET",
+      "Python",
+      "TypeScript",
+      "JavaScript",
+      "Node.js",
+      "React",
+      "Next.js",
+      "Angular",
+      "FastAPI",
+      "Django",
+      "Flask",
+    ],
+  },
+  {
+    id: "cloud",
+    title: "Cloud & Platforms",
+    callSign: "SYS-02",
+    accent: "violet",
+    skills: [
+      "AWS",
+      "Azure",
+      "GCP",
+      "Kubernetes",
+      "Docker",
+      "Terraform",
+      "Pulumi",
+      "Azure DevOps",
+      "Vercel",
+      "Salesforce",
+    ],
+  },
+  {
+    id: "observability",
+    title: "Monitoring & Observability",
+    callSign: "SYS-03",
+    accent: "cyan",
+    skills: [
+      "OpenTelemetry",
+      "Grafana",
+      "DataDog",
+      "New Relic",
+      "SumoLogic",
+      "CloudWatch",
+      "PagerDuty",
+    ],
+  },
+  {
+    id: "data",
+    title: "Databases & Storage",
+    callSign: "SYS-04",
+    accent: "violet",
+    skills: [
+      "PostgreSQL",
+      "MS SQL",
+      "MongoDB",
+      "Redis",
+      "Cassandra",
+      "Oracle",
+      "Databricks",
+      "Chroma",
+      "Pinecone",
+      "Kafka",
+    ],
+  },
+  {
+    id: "ai",
+    title: "AI & Machine Learning",
+    callSign: "SYS-05",
+    accent: "cyan",
+    skills: [
+      "OpenAI APIs",
+      "LangChain",
+      "RAG Pipelines",
+      "MCP",
+      "CrewAI",
+      "PyTorch",
+      "Keras",
+      "Scikit-learn",
+      "Ultralytics YOLO",
+      "OpenCV",
+      "Vector Search",
+    ],
+  },
+  {
+    id: "fde",
+    title: "Forward Deployed Engineering",
+    callSign: "SYS-06",
+    accent: "violet",
+    skills: [
+      "Stakeholder Partnership",
+      "Client-Embedded Delivery",
+      "Rapid Prototyping",
+      "Solution Architecture",
+      "Technical Mentorship",
+      "Incident Response",
+      "Cross-Team Leadership",
+      "Product Discovery",
+    ],
+  },
+];
