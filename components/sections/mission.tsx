@@ -12,7 +12,7 @@ export function Mission() {
         <div className="space-y-6">
           {profile.mission.map((paragraph, i) => (
             <Reveal key={i} delay={i * 0.12}>
-              <p className="text-base leading-relaxed text-starlight-dim md:text-lg">
+              <p className="text-base leading-relaxed text-starlight-dim text-pretty md:text-lg">
                 <GalaxyText text={paragraph} />
               </p>
             </Reveal>

@@ -102,7 +102,7 @@ export function Hero() {
         </motion.p>
         <motion.h1
           variants={item}
-          className="font-display text-5xl font-bold leading-[1.05] text-white md:text-7xl lg:text-8xl"
+          className="font-display text-5xl font-bold leading-[1.05] text-white text-balance md:text-7xl lg:text-8xl"
         >
           {profile.name}
         </motion.h1>

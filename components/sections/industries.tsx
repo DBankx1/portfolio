@@ -95,7 +95,10 @@ export function Industries() {
   const rotated = [...industries.slice(5), ...industries.slice(0, 5)];
 
   return (
-    <section aria-label="Industries explored" className="relative py-6 md:py-10">
+    <section
+      aria-label="Industries explored"
+      className="relative overflow-x-clip py-6 md:py-10"
+    >
       <Reveal amount={0.3}>
         <p className="mb-8 text-center font-mono text-[11px] tracking-[0.4em] text-starlight-dim uppercase md:text-xs">
           <span aria-hidden className="text-comet">

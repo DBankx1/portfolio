@@ -4,9 +4,11 @@ import { useRef, useState } from "react";
 import {
   AnimatePresence,
   motion,
+  useMotionValueEvent,
   useScroll,
   useSpring,
   useTransform,
+  useVelocity,
 } from "motion/react";
 import {
   contractRoles,
@@ -70,7 +72,7 @@ function MissionBriefing({ role, isLeft }: { role: Role; isLeft: boolean }) {
       <span aria-hidden className="shine-sweep" />
       <div
         className={cn(
-          "relative flex items-start gap-4",
+          "relative flex flex-col gap-3 sm:flex-row sm:items-start sm:gap-4",
           isLeft && "md:flex-row-reverse"
         )}
       >
@@ -94,7 +96,7 @@ function MissionBriefing({ role, isLeft }: { role: Role; isLeft: boolean }) {
           >
             {role.domain.label}
           </p>
-          <p className="mt-1.5 text-sm italic leading-relaxed text-starlight md:text-[15px]">
+          <p className="mt-1.5 text-sm italic leading-relaxed text-starlight text-pretty md:text-[15px]">
             {role.summary}
           </p>
         </div>
@@ -133,7 +135,7 @@ const tabs: {
 function Planet({ role }: { role: Role }) {
   const ring = ringStyles[role.planet.ring];
   return (
-    <div className="relative flex h-20 w-20 items-center justify-center md:h-24 md:w-24">
+    <div className="relative flex h-14 w-14 items-center justify-center md:h-24 md:w-24">
       {/* orbit ring */}
       <div
         aria-hidden
@@ -149,7 +151,7 @@ function Planet({ role }: { role: Role }) {
       {/* planet sphere */}
       <div
         className={cn(
-          "h-12 w-12 rounded-full bg-gradient-to-br shadow-[inset_-6px_-6px_12px_rgba(0,0,0,0.55)] md:h-14 md:w-14",
+          "h-9 w-9 rounded-full bg-gradient-to-br shadow-[inset_-6px_-6px_12px_rgba(0,0,0,0.55)] md:h-14 md:w-14",
           role.planet.gradient
         )}
       />
@@ -170,7 +172,7 @@ function RoleCard({ role, index }: { role: Role; index: number }) {
       )}
     >
       {/* planet pinned to the flight path */}
-      <div className="absolute left-0 top-0 -translate-x-[30%] md:left-1/2 md:-translate-x-1/2">
+      <div className="absolute left-7 top-0 -translate-x-1/2 md:left-1/2">
         <Reveal amount={0.6}>
           <Planet role={role} />
         </Reveal>
@@ -228,6 +230,95 @@ function RoleCard({ role, index }: { role: Role; index: number }) {
   );
 }
 
+function RocketShip({ landed, thrust }: { landed: boolean; thrust: number }) {
+  return (
+    <div className="relative">
+      {/* exhaust flame, trailing behind the direction of travel */}
+      <motion.div
+        aria-hidden
+        animate={{ opacity: landed ? 0 : thrust }}
+        transition={{ duration: 0.3, ease: "easeOut" }}
+        className="absolute bottom-full left-1/2 -mb-0.5 -translate-x-1/2 origin-bottom drop-shadow-[0_0_12px_rgba(249,115,22,0.85)]"
+      >
+        {/* outer plume */}
+        <motion.div
+          animate={{ scaleY: [1, 1.5, 0.85, 1.35, 1], opacity: [1, 0.75, 1, 0.8, 1] }}
+          transition={{ duration: 0.4, repeat: Infinity, ease: "easeInOut" }}
+          className="h-9 w-[11px] origin-bottom rounded-full bg-gradient-to-t from-amber-300 via-orange-500 to-red-600/0 blur-[1.5px]"
+        />
+        {/* white-hot core */}
+        <motion.div
+          animate={{ scaleY: [1, 1.35, 0.9, 1.25, 1] }}
+          transition={{ duration: 0.32, repeat: Infinity, ease: "easeInOut" }}
+          className="absolute bottom-0 left-1/2 h-5 w-[5px] origin-bottom -translate-x-1/2 rounded-full bg-gradient-to-t from-yellow-100 via-amber-300 to-orange-400/0"
+        />
+      </motion.div>
+
+      {/* hull, nose pointing down the flight path */}
+      <motion.svg
+        width="22"
+        height="32"
+        viewBox="0 0 22 32"
+        aria-hidden
+        animate={landed ? { y: [0, 1.5, 0] } : { y: 0 }}
+        transition={landed ? { duration: 0.5, ease: "easeOut" } : undefined}
+        className="drop-shadow-[0_0_10px_rgba(34,211,238,0.55)]"
+      >
+        <g transform="rotate(180 11 16)">
+          {/* body */}
+          <path
+            d="M11 2 C15 7 16.5 12 16.5 17 L16.5 22 L5.5 22 L5.5 17 C5.5 12 7 7 11 2 Z"
+            fill="url(#ship-hull)"
+            stroke="rgba(232,230,245,0.5)"
+            strokeWidth="0.75"
+          />
+          {/* window */}
+          <circle cx="11" cy="13.5" r="2.6" fill="#0b0630" stroke="#22d3ee" strokeWidth="1" />
+          <circle cx="11" cy="13.5" r="1" fill="#22d3ee" opacity="0.6" />
+          {/* fins */}
+          <path d="M5.5 17.5 L1.5 25 L5.5 23.5 Z" fill="#6d28d9" />
+          <path d="M16.5 17.5 L20.5 25 L16.5 23.5 Z" fill="#6d28d9" />
+          {/* nozzle */}
+          <path d="M8 22 L14 22 L12.8 25.5 L9.2 25.5 Z" fill="#312e81" />
+        </g>
+        <defs>
+          <linearGradient id="ship-hull" x1="5.5" y1="2" x2="16.5" y2="22">
+            <stop offset="0%" stopColor="#e8e6f5" />
+            <stop offset="60%" stopColor="#9d98c4" />
+            <stop offset="100%" stopColor="#4c1d95" />
+          </linearGradient>
+        </defs>
+      </motion.svg>
+
+      {/* touchdown rings on the final planet */}
+      <AnimatePresence>
+        {landed && (
+          <>
+            {[0, 0.35].map((delay) => (
+              <motion.span
+                key={delay}
+                aria-hidden
+                initial={{ opacity: 0.7, scale: 0.4 }}
+                animate={{ opacity: 0, scale: 2.2 }}
+                exit={{ opacity: 0 }}
+                transition={{
+                  duration: 1.4,
+                  delay,
+                  repeat: Infinity,
+                  repeatDelay: 0.6,
+                  ease: "easeOut",
+                }}
+                // local bottom-full lands below the ship on screen once the hull flips nose-up
+                className="absolute bottom-full left-1/2 -mb-1 h-4 w-8 -translate-x-1/2 rounded-[50%] border border-comet/60"
+              />
+            ))}
+          </>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 function FlightPath({ roles }: { roles: Role[] }) {
   const trackRef = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({
@@ -237,30 +328,53 @@ function FlightPath({ roles }: { roles: Role[] }) {
   const progress = useSpring(scrollYProgress, { stiffness: 90, damping: 25 });
   const shipTop = useTransform(progress, (v) => `${Math.min(v * 100, 100)}%`);
 
+  // engine physics: velocity of travel drives the flame, sign drives orientation
+  const velocity = useVelocity(progress);
+  const [thrust, setThrust] = useState(0);
+  const [ascending, setAscending] = useState(false);
+  const [landed, setLanded] = useState(false);
+
+  useMotionValueEvent(velocity, "change", (v) => {
+    // full-brightness burn as soon as the ship is moving at all
+    const speed = Math.abs(v);
+    setThrust(speed > 0.004 ? Math.min(0.65 + speed * 4, 1) : 0);
+    // flip only on a clear change of direction to avoid jitter
+    if (v < -0.03) setAscending(true);
+    else if (v > 0.03) setAscending(false);
+  });
+
+  useMotionValueEvent(progress, "change", (v) => {
+    setLanded(v >= 0.985);
+    // back near the launchpad the ship always faces down the route
+    if (v <= 0.02) setAscending(false);
+  });
+
   return (
     <div ref={trackRef} className="relative">
       {/* flight path track */}
       <div
         aria-hidden
-        className="absolute inset-y-0 left-[9px] w-px border-l border-dashed border-white/15 md:left-1/2"
+        className="absolute inset-y-0 left-7 w-px border-l border-dashed border-white/15 md:left-1/2"
       />
       {/* animated fill */}
       <motion.div
         aria-hidden
         style={{ scaleY: progress }}
-        className="absolute inset-y-0 left-[9px] w-px origin-top bg-gradient-to-b from-comet via-nebula to-comet md:left-1/2"
+        className="absolute inset-y-0 left-7 w-px origin-top bg-gradient-to-b from-comet via-nebula to-comet md:left-1/2"
       />
-      {/* ship marker riding the path */}
+      {/* rocket riding the path */}
       <motion.div
         aria-hidden
         style={{ top: shipTop }}
-        className="absolute left-[9px] z-10 -translate-x-1/2 -translate-y-1/2 md:left-1/2"
+        className="absolute left-7 z-10 -translate-x-1/2 -translate-y-1/2 md:left-1/2"
       >
-        <div className="flex h-7 w-7 rotate-180 items-center justify-center rounded-full bg-space border border-comet/60 shadow-glow-cyan">
-          <svg width="12" height="14" viewBox="0 0 12 14" aria-hidden>
-            <path d="M6 0 L11 12 L6 9.5 L1 12 Z" fill="#22d3ee" />
-          </svg>
-        </div>
+        <motion.div
+          // nose-down in flight; on touchdown the ship flips to land on its nozzle
+          animate={{ rotate: landed || ascending ? 180 : 0 }}
+          transition={{ type: "spring", stiffness: landed ? 120 : 200, damping: landed ? 16 : 24 }}
+        >
+          <RocketShip landed={landed} thrust={thrust} />
+        </motion.div>
       </motion.div>
 
       <div className="space-y-24 pb-8 pt-4 md:space-y-36">
@@ -337,7 +451,7 @@ export function Journey() {
             <p className="font-mono text-[11px] tracking-[0.35em] text-nebula uppercase">
               {active.callSign}
             </p>
-            <p className="mt-3 text-sm leading-relaxed text-starlight-dim md:text-base">
+            <p className="mt-3 text-sm leading-relaxed text-starlight-dim text-pretty md:text-base">
               {active.blurb}
             </p>
           </div>

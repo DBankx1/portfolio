@@ -42,9 +42,9 @@ export function Contact() {
           href={`mailto:${profile.contact.email}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="group mb-12 inline-flex items-center gap-4 rounded-2xl border border-comet/40 bg-comet/5 px-8 py-6 transition-all duration-300 hover:bg-comet/10 hover:shadow-glow-cyan"
+          className="group mb-12 inline-flex w-full max-w-full items-center justify-between gap-3 rounded-2xl border border-comet/40 bg-comet/5 px-5 py-5 transition-all duration-300 hover:bg-comet/10 hover:shadow-glow-cyan sm:w-auto sm:justify-start sm:gap-4 sm:px-8 sm:py-6"
         >
-          <span className="font-display text-xl font-semibold text-white md:text-2xl">
+          <span className="min-w-0 break-all font-display text-base font-semibold text-white sm:text-xl md:text-2xl">
             {profile.contact.email}
           </span>
           <span

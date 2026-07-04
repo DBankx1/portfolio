@@ -12,11 +12,11 @@ export function SectionHeading({ callSign, title, subtitle }: SectionHeadingProp
       <p className="font-mono text-xs md:text-sm tracking-[0.35em] text-comet mb-3 uppercase">
         {callSign}
       </p>
-      <h2 className="font-display text-3xl md:text-5xl font-bold text-white">
+      <h2 className="font-display text-3xl md:text-5xl font-bold text-white text-balance">
         {title}
       </h2>
       {subtitle ? (
-        <p className="mt-4 max-w-2xl text-starlight-dim text-base md:text-lg">
+        <p className="mt-4 max-w-2xl text-starlight-dim text-base md:text-lg text-pretty">
           {subtitle}
         </p>
       ) : null}
